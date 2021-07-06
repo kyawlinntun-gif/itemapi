@@ -40,19 +40,17 @@ class ItemController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'text' => 'required',
+            'text' => 'required|min:3',
+            'body' => 'required|min:25'
         ]);
 
-        if($validator->fails())
-        {
+        if ($validator->fails()) {
             return response([
                 'data' => [
                     'errors' => $validator->messages()
                 ]
             ]);
-        }
-        else
-        {
+        } else {
             // return $request->all();
             $item = Item::create($request->all());
             return response([
@@ -97,21 +95,20 @@ class ItemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $item)
     {
         $validator = Validator::make($request->all(), [
             'text' => 'required|min:3',
-            'body' => 'required'
+            'body' => 'required|min:25'
         ]);
-        if($validator->fails())
-        {
+        if ($validator->fails()) {
             return response([
                'data' => [
                    'errors' => $validator->messages()
                ]
             ]);
         }
-        $item = Item::find($id);
+        $item = Item::find($item);
         $item->text = $request->text;
         $item->body = $request->body;
         $item->update();
@@ -128,10 +125,10 @@ class ItemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Item $item)
     {
-        $item = Item::find($id);
-        $name = $item->text;
+        // $item = Item::find($id);
+        // $name = $item->text;
         $item->delete();
         return response([
             // 'data' => [
